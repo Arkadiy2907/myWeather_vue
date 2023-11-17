@@ -52,10 +52,26 @@ export default {
   <div class="wrapper">
     <h1>приложение о погоде</h1>
     <p>узнать погоду в {{ city == '' ? 'вашем городе' : cityName }}</p>
-    <input type="text" v-model="city" placeholder="введите город" />
-    <button v-if="city !== ''" @click="getWeather()">получить погоду</button>
-    <button disabled v-else>введите название</button>
-    <p class="error">{{ error }}</p>
+    <input
+      v-model="city"
+      type="text"
+      placeholder="введите город"
+    >
+    <button
+      v-if="city !== ''"
+      @click="getWeather()"
+    >
+      получить погоду
+    </button>
+    <button
+      v-else
+      disabled
+    >
+      введите название
+    </button>
+    <p class="error">
+      {{ error }}
+    </p>
     <div v-if="info != null">
       <p>{{ showTemp }}</p>
       <p>{{ showFeelsLikeTemp }}</p>
