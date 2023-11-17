@@ -10,7 +10,7 @@
 
 ### Стек:
 
-Приложение разработано с использованием "vue": "3.3.4", axios,
+Приложение разработано с использованием vue: "3.3.4", axios, eslint
 
 ### Установка зависимостей:
 
@@ -27,4 +27,4 @@
 
 ### P.S.:
 
-Тут можно посмотреть: https://main--classy-queijadas-655f8e.netlify.app/
+[Open the Application](https://main--classy-queijadas-655f8e.netlify.app/)
