@@ -14,9 +14,10 @@
     "vue": "3.3.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.4.0",
+    "@vitejs/plugin-vue": "^4.5.0",
     "eslint": "^8.53.0",
     "eslint-plugin-vue": "^9.18.1",
-    "vite": "^4.4.11"
+    "vite": "^4.4.11",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }
