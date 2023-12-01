@@ -1,7 +1,43 @@
+<template>
+  <div class="wrapper">
+    <h1>приложение о погоде</h1>
+    <local-date />
+    <p>узнать погоду в {{ city == '' ? 'вашем городе' : cityName }}</p>
+    <input
+      v-model="city"
+      type="text"
+      placeholder="введите город"
+    >
+    <button
+      v-if="city !== ''"
+      @click="getWeather()"
+    >
+      получить погоду
+    </button>
+    <button
+      v-else
+      disabled
+    >
+      введите название
+    </button>
+    <p class="error">
+      {{ error }}
+    </p>
+    <div v-if="info != null">
+      <p>{{ showTemp }}</p>
+      <p>{{ showFeelsLikeTemp }}</p>
+      <p>{{ showMinTemp }}</p>
+      <p>{{ showMaxTemp }}</p>
+    </div>
+  </div>
+</template>
+
 <script>
 import axios from 'axios';
+import LocalDate from '@/components/LocalDate.vue';
 
 export default {
+  components: { LocalDate },
   data() {
     return {
       city: '',
@@ -47,39 +83,6 @@ export default {
   },
 };
 </script>
-
-<template>
-  <div class="wrapper">
-    <h1>приложение о погоде</h1>
-    <p>узнать погоду в {{ city == '' ? 'вашем городе' : cityName }}</p>
-    <input
-      v-model="city"
-      type="text"
-      placeholder="введите город"
-    >
-    <button
-      v-if="city !== ''"
-      @click="getWeather()"
-    >
-      получить погоду
-    </button>
-    <button
-      v-else
-      disabled
-    >
-      введите название
-    </button>
-    <p class="error">
-      {{ error }}
-    </p>
-    <div v-if="info != null">
-      <p>{{ showTemp }}</p>
-      <p>{{ showFeelsLikeTemp }}</p>
-      <p>{{ showMinTemp }}</p>
-      <p>{{ showMaxTemp }}</p>
-    </div>
-  </div>
-</template>
 
 <style>
 .error {
