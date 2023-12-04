@@ -2,26 +2,33 @@
   <div class="wrapper">
     <h1>приложение о погоде</h1>
     <local-date />
-    <p>узнать погоду в {{ city == '' ? 'вашем городе' : cityName }}</p>
-    <input v-model="city" type="text" placeholder="введите город" />
-    <button v-if="city !== ''" @click="getWeather()">показать погоду</button>
-    <button v-else disabled>показать погоду</button>
+    {{ lat }}
+    {{ lon }}
+    <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
+    <input v-model="city" type="text" placeholder="введите город" @keyup.enter="
+      getWeather();
+    focused = false;
+    " @focus="focused = true" @blur="focused = false">
+    <button :disabled="city === ''" @click="getWeather()">
+      показать погоду
+    </button>
     <p class="error">
       {{ error }}
     </p>
     <div v-if="!!info">
       <info-weather :info="info" />
     </div>
-    <div v-if="info == false">
+
+    <div v-if="info === false && !focused">
       <p>город не найден</p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import LocalDate from '@/components/LocalDate.vue';
 import InfoWeather from '@/components/InfoWeather.vue';
+import { fetchWeather, fetchMyCity } from '@/helper/api.js';
 
 export default {
   components: { LocalDate, InfoWeather },
@@ -30,12 +37,22 @@ export default {
       city: '',
       error: '',
       info: null,
+      focused: false,
+      myCity: '',
+      lat: '',
+      lon: '',
+      obj: null,
     };
   },
   computed: {
     cityName() {
-      return `" ${this.city} "`;
+      return `" ${this.myCity} "`;
     },
+  },
+  mounted() {
+    this.myCity = this.getCoordCity();
+    this.city = this.getCoordCity();
+    this.getLocation();
   },
   methods: {
     getWeather() {
@@ -43,14 +60,38 @@ export default {
         this.error = 'в названии должно быть больше 1 символа';
         return false;
       }
-
+      this.myCity = this.city;
       this.error = '';
+      this.info = null;
 
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=ecbaa67ba7bece31be9e96bd8181180a`
-        )
-        .then((res) => (this.info = res.data))
+      fetchWeather(this.city)
+        .then((res) => {
+          this.info = res.data;
+          this.city = '';
+        })
+        .catch(() => (this.info = false));
+    },
+
+    getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.showPosition);
+      } else {
+        this.error = "Geolocation is not supported.";
+      }
+    },
+
+    showPosition(position) {
+      this.lat = position.coords.latitude;
+      this.lon = position.coords.longitude;
+      this.myCity = this.getCoordCity();
+    },
+
+    getCoordCity() {
+      return fetchMyCity(this.lat, this.lon)
+        .then((res) => {
+          this.info = res.data;
+          this.city = '';
+        })
         .catch(() => (this.info = false));
     },
   },
@@ -66,12 +107,10 @@ export default {
   width: 900px;
   height: 500px;
   border-radius: 50px;
-  background: linear-gradient(
-    to right,
-    rgb(201, 222, 150) 0%,
-    rgb(41, 164, 75) 100%,
-    rgb(138, 182, 107) 100%
-  );
+  background: linear-gradient(to right,
+      rgb(201, 222, 150) 0%,
+      rgb(41, 164, 75) 100%,
+      rgb(138, 182, 107) 100%);
 
   text-align: center;
   color: white;
