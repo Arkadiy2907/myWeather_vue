@@ -2,18 +2,13 @@
   <div class="wrapper">
     <h1>приложение о погоде</h1>
     <local-date />
-    <p>узнать погоду в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
-    <input
-      v-model="city"
-      type="text"
-      placeholder="введите город"
-      @keyup.enter="
-        getWeather();
-        focused = false;
-      "
-      @focus="focused = true"
-      @blur="focused = false"
-    />
+    {{ lat }}
+    {{ lon }}
+    <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
+    <input v-model="city" type="text" placeholder="введите город" @keyup.enter="
+      getWeather();
+    focused = false;
+    " @focus="focused = true" @blur="focused = false">
     <button :disabled="city === ''" @click="getWeather()">
       показать погоду
     </button>
@@ -33,7 +28,7 @@
 <script>
 import LocalDate from '@/components/LocalDate.vue';
 import InfoWeather from '@/components/InfoWeather.vue';
-import { fetchWeather } from '@/helper/api.js';
+import { fetchWeather, fetchMyCity } from '@/helper/api.js';
 
 export default {
   components: { LocalDate, InfoWeather },
@@ -44,12 +39,20 @@ export default {
       info: null,
       focused: false,
       myCity: '',
+      lat: '',
+      lon: '',
+      obj: null,
     };
   },
   computed: {
     cityName() {
       return `" ${this.myCity} "`;
     },
+  },
+  mounted() {
+    this.myCity = this.getCoordCity();
+    this.city = this.getCoordCity();
+    this.getLocation();
   },
   methods: {
     getWeather() {
@@ -62,6 +65,29 @@ export default {
       this.info = null;
 
       fetchWeather(this.city)
+        .then((res) => {
+          this.info = res.data;
+          this.city = '';
+        })
+        .catch(() => (this.info = false));
+    },
+
+    getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.showPosition);
+      } else {
+        this.error = "Geolocation is not supported.";
+      }
+    },
+
+    showPosition(position) {
+      this.lat = position.coords.latitude;
+      this.lon = position.coords.longitude;
+      this.myCity = this.getCoordCity();
+    },
+
+    getCoordCity() {
+      return fetchMyCity(this.lat, this.lon)
         .then((res) => {
           this.info = res.data;
           this.city = '';
@@ -81,12 +107,10 @@ export default {
   width: 900px;
   height: 500px;
   border-radius: 50px;
-  background: linear-gradient(
-    to right,
-    rgb(201, 222, 150) 0%,
-    rgb(41, 164, 75) 100%,
-    rgb(138, 182, 107) 100%
-  );
+  background: linear-gradient(to right,
+      rgb(201, 222, 150) 0%,
+      rgb(41, 164, 75) 100%,
+      rgb(138, 182, 107) 100%);
 
   text-align: center;
   color: white;
