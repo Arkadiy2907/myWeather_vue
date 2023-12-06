@@ -2,8 +2,13 @@
   <div class="wrapper">
     <h1>приложение о погоде</h1>
     <local-date />
-    {{ lat }}
-    {{ lon }}
+    {{ lat }} {{ lon }}
+    <select v-model="selectedCity">
+      <option disabled value="">Выберите один из вариантов</option>
+      <option v-for="option in options" :value="option.value" :key="option.value">
+        {{ option.text }}
+      </option>
+    </select>
     <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
     <input v-model="city" type="text" placeholder="введите город" @keyup.enter="
       getWeather();
@@ -28,7 +33,7 @@
 <script>
 import LocalDate from '@/components/LocalDate.vue';
 import InfoWeather from '@/components/InfoWeather.vue';
-import { fetchWeather, fetchMyCity } from '@/helper/api.js';
+import { fetchWeather, fetchMyCity, fetchChoseMyCity } from '@/helper/api.js';
 
 export default {
   components: { LocalDate, InfoWeather },
@@ -41,7 +46,12 @@ export default {
       myCity: '',
       lat: '',
       lon: '',
-      obj: null,
+      selectedCity: '',
+      options: [
+        { text: 'Один', value: 'A' },
+        { text: 'Два', value: 'B' },
+        { text: 'Три', value: 'C' }
+      ]
     };
   },
   computed: {
@@ -50,9 +60,10 @@ export default {
     },
   },
   mounted() {
-    this.myCity = this.getCoordCity();
-    this.city = this.getCoordCity();
+    // this.myCity = this.getCoordCity();
+    // this.city = this.getCoordCity();
     this.getLocation();
+    // this.getCoordCity();
   },
   methods: {
     getWeather() {
@@ -67,6 +78,7 @@ export default {
       fetchWeather(this.city)
         .then((res) => {
           this.info = res.data;
+          // console.log(res.data);
           this.city = '';
         })
         .catch(() => (this.info = false));
@@ -87,9 +99,12 @@ export default {
     },
 
     getCoordCity() {
-      return fetchMyCity(this.lat, this.lon)
+      // return fetchMyCity(this.lat, this.lon)
+      return fetchChoseMyCity(this.lat, this.lon)
         .then((res) => {
-          this.info = res.data;
+          // this.info = res.data.lat;
+          // this.myCity = res.data.lat;
+          console.log(res.data);
           this.city = '';
         })
         .catch(() => (this.info = false));
