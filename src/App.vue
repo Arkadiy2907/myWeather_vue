@@ -2,8 +2,14 @@
   <div class="wrapper">
     <h1>приложение о погоде</h1>
     <local-date />
-    {{ lat }}
-    {{ lon }}
+    {{ lat }} {{ lon }}
+    <h2>Выберите один из вариантов</h2>
+    <select v-model="selectedCity">
+      <option value="">Выберите один из вариантов</option>
+      <option v-for="option in options" :value="option.name" :key="option.name">
+        {{ option.name }}
+      </option>
+    </select>
     <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
     <input v-model="city" type="text" placeholder="введите город" @keyup.enter="
       getWeather();
@@ -28,7 +34,7 @@
 <script>
 import LocalDate from '@/components/LocalDate.vue';
 import InfoWeather from '@/components/InfoWeather.vue';
-import { fetchWeather, fetchMyCity } from '@/helper/api.js';
+import { fetchWeather, fetchMyCity, fetchNearMyCity } from '@/helper/api.js';
 
 export default {
   components: { LocalDate, InfoWeather },
@@ -41,18 +47,27 @@ export default {
       myCity: '',
       lat: '',
       lon: '',
-      obj: null,
+      selectedCity: '',
+      options: []
     };
   },
   computed: {
     cityName() {
       return `" ${this.myCity} "`;
     },
+    // this.myCity = this.selectedCity
+  },
+  watch: {
+    selectedCity(newCity) {
+      this.myCity = newCity;
+      this.city = newCity;
+    }
   },
   mounted() {
-    this.myCity = this.getCoordCity();
-    this.city = this.getCoordCity();
+    // this.myCity = this.getCoordCity();
+    // this.city = this.getCoordCity();
     this.getLocation();
+    // this.getCoordCity();
   },
   methods: {
     getWeather() {
@@ -67,9 +82,19 @@ export default {
       fetchWeather(this.city)
         .then((res) => {
           this.info = res.data;
+          console.log(res.data);
+          this.lat = res.data.coord.lat
+          this.lon = res.data.coord.lon;
           this.city = '';
         })
-        .catch(() => (this.info = false));
+        .catch(() => {
+          this.info = [{
+            name: 'нет вариантов'
+          }
+          ];
+          (this.info = false)
+        })
+        ;
     },
 
     getLocation() {
@@ -83,16 +108,27 @@ export default {
     showPosition(position) {
       this.lat = position.coords.latitude;
       this.lon = position.coords.longitude;
-      this.myCity = this.getCoordCity();
+      // this.myCity = this.getCoordCity();
+      this.getCoordCity();
     },
 
     getCoordCity() {
-      return fetchMyCity(this.lat, this.lon)
+      // return fetchMyCity(this.lat, this.lon)
+      return fetchNearMyCity(this.lat, this.lon)
         .then((res) => {
-          this.info = res.data;
+          // this.info = res.data.lat;
+          // this.myCity = res.data.lat;
+          // console.log(res.data);
+          this.options = res.data
           this.city = '';
         })
-        .catch(() => (this.info = false));
+        .catch(() => {
+          this.options = [{
+            name: 'город не найден'
+          }]
+          this.info = false
+        })
+
     },
   },
 };
