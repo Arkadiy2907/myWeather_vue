@@ -1,15 +1,16 @@
 <template>
   <div class="wrapper">
     <h1>приложение о погоде</h1>
-    <local-date />
-    {{ lat }} {{ lon }}
     <h2>Выберите один из вариантов</h2>
     <select v-model="selectedCity">
-      <option value="">Выберите один из вариантов</option>
-      <option v-for="option in options" :value="option.name" :key="option.name">
+      <option value="">
+        Выберите один из вариантов
+      </option>
+      <option v-for="option in options" :key="option.name" :value="option.name">
         {{ option.name }}
       </option>
     </select>
+
     <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
     <input v-model="city" type="text" placeholder="введите город" @keyup.enter="
       getWeather();
@@ -22,6 +23,7 @@
       {{ error }}
     </p>
     <div v-if="!!info">
+      <local-date />
       <info-weather :info="info" />
     </div>
 
@@ -34,7 +36,11 @@
 <script>
 import LocalDate from '@/components/LocalDate.vue';
 import InfoWeather from '@/components/InfoWeather.vue';
-import { fetchWeather, fetchMyCity, fetchNearMyCity } from '@/helper/api.js';
+import {
+  fetchWeatherNow,
+  fetchWeatherNextDays,
+  fetchNearMyCity,
+} from '@/helper/api.js';
 
 export default {
   components: { LocalDate, InfoWeather },
@@ -43,25 +49,25 @@ export default {
       city: '',
       error: '',
       info: null,
+      infoNextDays: [],
       focused: false,
       myCity: '',
       lat: '',
       lon: '',
       selectedCity: '',
-      options: []
+      options: [],
     };
   },
   computed: {
     cityName() {
       return `" ${this.myCity} "`;
     },
-    // this.myCity = this.selectedCity
   },
   watch: {
     selectedCity(newCity) {
       this.myCity = newCity;
       this.city = newCity;
-    }
+    },
   },
   mounted() {
     // this.myCity = this.getCoordCity();
@@ -79,29 +85,43 @@ export default {
       this.error = '';
       this.info = null;
 
-      fetchWeather(this.city)
+      fetchWeatherNow(this.city)
         .then((res) => {
           this.info = res.data;
-          console.log(res.data);
-          this.lat = res.data.coord.lat
+          // console.log(res.data);
+          this.lat = res.data.coord.lat;
           this.lon = res.data.coord.lon;
           this.city = '';
         })
         .catch(() => {
-          this.info = [{
-            name: 'нет вариантов'
-          }
+          this.info = [
+            {
+              name: 'нет вариантов',
+            },
           ];
-          (this.info = false)
+          this.info = false;
+        });
+
+      fetchWeatherNextDays(this.lat, this.lon)
+        .then((res) => {
+          this.infoNextDays = res.data;
+          console.log(res.data);
         })
-        ;
+        .catch(() => {
+          this.infoNextDays = [
+            {
+              name: 'нет данных',
+            },
+          ];
+          // (this.info = false)
+        });
     },
 
     getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(this.showPosition);
       } else {
-        this.error = "Geolocation is not supported.";
+        this.error = 'Geolocation is not supported.';
       }
     },
 
@@ -113,22 +133,22 @@ export default {
     },
 
     getCoordCity() {
-      // return fetchMyCity(this.lat, this.lon)
       return fetchNearMyCity(this.lat, this.lon)
         .then((res) => {
           // this.info = res.data.lat;
           // this.myCity = res.data.lat;
           // console.log(res.data);
-          this.options = res.data
+          this.options = res.data;
           this.city = '';
         })
         .catch(() => {
-          this.options = [{
-            name: 'город не найден'
-          }]
-          this.info = false
-        })
-
+          this.options = [
+            {
+              name: 'город не найден',
+            },
+          ];
+          this.info = false;
+        });
     },
   },
 };
