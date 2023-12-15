@@ -88,7 +88,7 @@ export default {
       fetchWeatherNow(this.city)
         .then((res) => {
           this.info = res.data;
-          // console.log(res.data);
+          console.log(res.data);
           this.lat = res.data.coord.lat;
           this.lon = res.data.coord.lon;
           this.city = '';
