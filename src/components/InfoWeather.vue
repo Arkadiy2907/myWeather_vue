@@ -5,7 +5,10 @@
     <p>{{ showMinTemp }}</p>
     <p>{{ showMaxTemp }}</p>
     <figure class="image">
-      <img :src="getIconUrl" alt="Icon">
+      <img
+        :src="getIconUrl"
+        alt="Icon"
+      >
     </figure>
   </div>
 </template>
@@ -34,7 +37,7 @@ export default {
     },
     getIconUrl() {
       return `http://openweathermap.org/img/wn/${this.info?.weather[0].icon}@2x.png`;
-    }
+    },
   },
 };
 </script>
