@@ -1,40 +1,50 @@
 <template>
   <div class="wrapper">
-    <h1>приложение о погоде</h1>
-    <h2>Выберите один из вариантов</h2>
-    <select v-model="selectedCity">
-      <option value="">Выберите один из вариантов</option>
-      <option v-for="option in options" :key="option.name" :value="option.name">
-        {{ option.name }}
-      </option>
-    </select>
-    <p>погода в {{ myCity == '' ? 'вашем городе' : cityName }}</p>
-
-    <input
-      v-model="city"
-      type="text"
-      placeholder="введите город"
-      @keyup.enter="
-        getWeather();
-        focused = false;
-      "
-      @focus="focused = true"
-      @blur="focused = false"
-    />
-
-    <button :disabled="city === ''" @click="getWeather()">
-      показать погоду
-    </button>
-    <p class="error">
-      {{ error }}
-    </p>
-    <div v-if="!!info">
+    <h1>Че там обещают наверху</h1>
+    <div class="chose">
+      <h2>но сначала определись, что ты, где ты?</h2>
+      <div class="chose__place">
+        <select v-model="selectedCity" class="select">
+          <option value="">комп думает ты где то тут</option>
+          <option
+            v-for="option in options"
+            :key="option.name"
+            :value="option.name"
+          >
+            {{ option.name }}
+          </option>
+        </select>
+        <div class="wrap_input">
+          <input
+            v-model="city"
+            type="text"
+            placeholder="сам то че? где?"
+            @keyup.enter="
+              getWeather();
+              focused = false;
+            "
+            @focus="focused = true"
+            @blur="focused = false"
+          />
+          <p class="error">
+            {{ error }}
+          </p>
+        </div>
+        <button :disabled="city === ''" @click="getWeather()">
+          {{ city === '' ? 'нее сначала впишись' : 'нукася и че? жмакай!!' }}
+        </button>
+      </div>
+    </div>
+    <h2 class="place">
+      есть мнение, что тебе интересен {{ myCity == '' ? 'релакс' : cityName }}
+    </h2>
+    <div v-if="!!info && myCity !== ''" class="info">
       <local-date />
       <info-weather :info="info" />
     </div>
 
     <div v-if="info === false && !focused">
-      <p>город не найден</p>
+      <p>но это не точно, потому город не найден</p>
     </div>
   </div>
 </template>
@@ -76,15 +86,12 @@
       },
     },
     mounted() {
-      // this.myCity = this.getCoordCity();
-      // this.city = this.getCoordCity();
       this.getLocation();
-      // this.getCoordCity();
     },
     methods: {
       getWeather() {
         if (this.city.trim().length < 2) {
-          this.error = 'в названии должно быть больше 1 символа';
+          this.error = 'а если 2 буковки написать';
           return false;
         }
         this.myCity = this.city;
@@ -94,7 +101,7 @@
         fetchWeatherNow(this.city)
           .then((res) => {
             this.info = res.data;
-            console.log(res.data);
+            // console.log(res.data);
             this.lat = res.data.coord.lat;
             this.lon = res.data.coord.lon;
             this.city = '';
@@ -119,7 +126,6 @@
                 name: 'нет данных',
               },
             ];
-            // (this.info = false)
           });
       },
 
@@ -134,15 +140,12 @@
       showPosition(position) {
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
-        // this.myCity = this.getCoordCity();
         this.getCoordCity();
       },
 
       getCoordCity() {
         return fetchNearMyCity(this.lat, this.lon)
           .then((res) => {
-            // this.info = res.data.lat;
-            // this.myCity = res.data.lat;
             // console.log(res.data);
             this.options = res.data;
             this.city = '';
@@ -161,13 +164,9 @@
 </script>
 
 <style>
-  .error {
-    color: red;
-  }
-
   .wrapper {
-    width: 900px;
-    height: 500px;
+    width: 60rem;
+    max-height: min-content;
     border-radius: 50px;
     background: linear-gradient(
       to right,
@@ -178,15 +177,16 @@
 
     text-align: center;
     color: white;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
 
   .wrapper h1 {
-    padding-top: 15px;
-    margin-top: 50px;
-  }
-
-  .wrapper p {
-    margin-top: 20px;
+    padding: 5px;
+    margin: 2rem;
   }
 
   .wrapper input {
@@ -226,5 +226,47 @@
   .wrapper button:disabled {
     background: rgb(138, 43, 227);
     cursor: not-allowed;
+  }
+
+  .chose h2,
+  .place {
+    margin-bottom: 1rem;
+  }
+
+  .chose__place {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    align-items: baseline;
+  }
+
+  .wrap_input {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 1rem;
+  }
+
+  .select {
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    height: 2.5rem;
+    padding: 8px;
+    background-color: rgb(43, 125, 125);
+    color: rgb(170, 255, 255);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .info {
+  }
+
+  .error {
+    color: red;
+    font-size: 1rem;
+    padding-top: 2px;
   }
 </style>
