@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="localeDate">
     {{
       new Date().toLocaleDateString('eu-us', {
         weekday: 'long',
@@ -10,3 +10,11 @@
     }}
   </div>
 </template>
+
+<style scoped>
+  .localeDate {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.7rem;
+  }
+</style>

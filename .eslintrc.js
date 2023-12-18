@@ -5,11 +5,11 @@ module.exports = {
       'error',
       {
         html: {
-          void: 'never',
+          void: 'any',
         },
       },
     ],
+    'vue/max-attributes-per-line': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
   },
 };
-
-//  extends: ['eslint:recommended', 'plugin:vue/vue3-recommended'],
