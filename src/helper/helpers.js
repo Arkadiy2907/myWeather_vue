@@ -1,4 +1,4 @@
-const windRu = {
+const strong = {
   0.2: 'Штиль',
   1.5: 'Слабый ветер',
   3.3: 'Легкий ветерок',
@@ -14,22 +14,49 @@ const windRu = {
   Infinity: 'Ураган',
 };
 
-export function forceWind(y) {
+export const forceWind = (y) => {
   const x = y.toFixed(1);
-  for (const [force, description] of Object.entries(windRu)) {
+  for (const [force, description] of Object.entries(strong)) {
     if (x <= force) {
       return description;
     }
   }
-}
+};
 
-export function directionWind(x) {
-  if (x == 360 || x == 0) return 'North';
-  if ((x > 0) & (x < 90)) return 'North East';
-  if (x == 90) return 'East';
-  if ((x > 90) & (x < 180)) return 'South East';
-  if (x == 180) return 'South';
-  if ((x > 180) & (x < 270)) return 'South West';
-  if (x == 270) return 'West';
-  if ((x > 270) & (x < 360)) return 'North West';
-}
+export const getKmHour = (x) => Math.round((x / 1000) * 3600);
+
+const direction = [
+  'северный',
+  'северо восточный',
+  'восточный',
+  'юго восточный',
+  'южный',
+  'юго западный',
+  'западный',
+  'северо западный',
+];
+
+export const directionWind = (x) => {
+  const index = Math.floor((x % 360) / 45);
+  return direction[index];
+};
+
+const sky = {
+  ['01n' || '01d']: 'чистое небо',
+  ['02d' || '02n']: 'малооблачно',
+  ['03d' || '03n']: 'небольшие облака',
+  ['04d' || '04n']: 'облачно с просветами',
+  ['09d' || '09n']: 'ливень',
+  ['10d' || '10n']: 'дождь',
+  ['11d' || '11n']: 'гроза',
+  ['13d' || '13n']: 'снег',
+  ['50d' || '50n']: 'туман',
+};
+
+export const getSky = (x) => {
+  for (const [icon, description] of Object.entries(sky)) {
+    if (x <= icon) {
+      return description;
+    }
+  }
+};

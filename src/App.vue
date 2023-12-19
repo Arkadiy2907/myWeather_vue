@@ -101,7 +101,7 @@
         fetchWeatherNow(this.city)
           .then((res) => {
             this.info = res.data;
-            console.log(res.data);
+            // console.log(res.data);
             this.lat = res.data.coord.lat;
             this.lon = res.data.coord.lon;
             this.city = '';
@@ -118,7 +118,7 @@
         fetchWeatherNextDays(this.lat, this.lon)
           .then((res) => {
             this.infoNextDays = res.data;
-            // console.log(res.data);
+            console.log(res.data);
           })
           .catch(() => {
             this.infoNextDays = [
@@ -174,7 +174,7 @@
       rgb(41, 164, 75) 100%,
       rgb(138, 182, 107) 100%
     );
-
+    padding: 5px;
     text-align: center;
     color: white;
     margin-top: 2rem;
