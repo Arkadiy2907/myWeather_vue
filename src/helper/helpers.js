@@ -1,27 +1,62 @@
-export function forceWind(y) {
-  const x = y.toFixed(1);
-  if (x <= 0.2) return "Calm";
-  if ((x >= 0.3) & (x <= 1.5)) return "Light Air";
-  if ((x >= 1.6) & (x <= 3.3)) return "Light Breeze";
-  if ((x >= 3.4) & (x <= 5.4)) return "Gentle Breeze";
-  if ((x >= 5.5) & (x <= 7.9)) return "Moderate Breeze";
-  if ((x >= 8) & (x <= 10.7)) return "Fresh Breeze";
-  if ((x >= 10.8) & (x <= 13.8)) return "Strong Breeze";
-  if ((x >= 13.9) & (x <= 17.1)) return "Near Gale";
-  if ((x >= 17.2) & (x <= 20.7)) return "Gale";
-  if ((x >= 20.8) & (x <= 24.4)) return "Strong Gale";
-  if ((x >= 24.5) & (x <= 28.4)) return "Storm";
-  if ((x >= 28.5) & (x <= 32.6)) return "Violent Storm";
-  if (x >= 32.7) return "Hurricane";
-}
+const strong = {
+  0.2: 'Штиль',
+  1.5: 'Слабый ветер',
+  3.3: 'Легкий ветерок',
+  5.4: 'Слабый ветер',
+  7.9: 'Умеренный ветер',
+  10.7: 'Свежий ветер',
+  13.8: 'Сильный ветер',
+  17.1: 'Крепкий ветер',
+  20.7: 'Очень крепкий ветер',
+  24.4: 'Шторм',
+  28.4: 'Сильный шторм',
+  32.6: 'Жестокий шторм',
+  Infinity: 'Ураган',
+};
 
-export function directionWind(x) {
-  if (x == 360 || x == 0) return "North";
-  if ((x > 0) & (x < 90)) return "North East";
-  if (x == 90) return "East";
-  if ((x > 90) & (x < 180)) return "South East";
-  if (x == 180) return "South";
-  if ((x > 180) & (x < 270)) return "South West";
-  if (x == 270) return "West";
-  if ((x > 270) & (x < 360)) return "North West";
-}
+export const forceWind = (y) => {
+  const x = y.toFixed(1);
+  for (const [force, description] of Object.entries(strong)) {
+    if (x <= force) {
+      return description;
+    }
+  }
+};
+
+export const getKmHour = (x) => Math.round((x / 1000) * 3600);
+
+const direction = [
+  'северный',
+  'северо восточный',
+  'восточный',
+  'юго восточный',
+  'южный',
+  'юго западный',
+  'западный',
+  'северо западный',
+];
+
+export const directionWind = (x) => {
+  const index = Math.floor((x % 360) / 45);
+  return direction[index];
+};
+
+const sky = {
+  ['01n' || '01d']: 'чистое небо',
+  ['02d' || '02n']: 'малооблачно',
+  ['03d' || '03n']: 'небольшие облака',
+  ['04d' || '04n']: 'облачно с просветами',
+  ['09d' || '09n']: 'ливень',
+  ['10d' || '10n']: 'дождь',
+  ['11d' || '11n']: 'гроза',
+  ['13d' || '13n']: 'снег',
+  ['50d' || '50n']: 'туман',
+};
+
+export const getSky = (x) => {
+  for (const [icon, description] of Object.entries(sky)) {
+    if (x <= icon) {
+      return description;
+    }
+  }
+};

@@ -153,7 +153,7 @@
           .catch(() => {
             this.options = [
               {
-                name: 'город не найден',
+                name: 'напиши город сам',
               },
             ];
             this.info = false;
@@ -174,7 +174,7 @@
       rgb(41, 164, 75) 100%,
       rgb(138, 182, 107) 100%
     );
-
+    padding: 5px;
     text-align: center;
     color: white;
     margin-top: 2rem;
