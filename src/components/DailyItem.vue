@@ -12,12 +12,17 @@
         {{ localeDateSunriseTime }}
       </p>
       <p>зак: {{ localeDateSunsetTime }}</p>
+      <p>ветер:</p>
+      <p>{{ showForceWind }}</p>
+      <p>{{ showDirectionWind }}</p>
+      <p>{{ showForceWindM }}</p>
+      <p>{{ showForceWindKm }}</p>
     </div>
   </div>
 </template>
 
 <script>
-  import * as date from '@/helper/helpers.js';
+  import * as help from '@/helper/helpers.js';
 
   export default {
     props: {
@@ -32,13 +37,25 @@
       },
 
       localeDateDay() {
-        return date.localeDateDay(this.daily?.dt);
+        return help.localeDateDay(this.daily?.dt);
       },
       localeDateSunriseTime() {
-        return date.localeDateTime(this.daily?.sunrise);
+        return help.localeDateTime(this.daily?.sunrise);
       },
       localeDateSunsetTime() {
-        return date.localeDateTime(this.daily?.sunset);
+        return help.localeDateTime(this.daily?.sunset);
+      },
+      showDirectionWind() {
+        return help.directionWind(this.daily?.wind_deg);
+      },
+      showForceWind() {
+        return help.forceWind(this.daily?.wind_speed);
+      },
+      showForceWindM() {
+        return `${this.daily?.wind_speed.toFixed(1)} м/с`;
+      },
+      showForceWindKm() {
+        return `${help.getKmHour(this.daily?.wind_speed)} км/ч`;
       },
     },
   };
@@ -54,6 +71,9 @@
     text-align: left;
     word-spacing: 2px;
     line-height: 1.3rem;
+    width: 6rem;
+    max-width: 6rem;
+    overflow: hidden;
     transition: background-color ease 500ms;
   }
 

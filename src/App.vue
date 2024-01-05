@@ -181,7 +181,7 @@
       rgb(41, 164, 75) 100%,
       rgb(138, 182, 107) 100%
     );
-    padding: 5px;
+    padding: 1rem;
     text-align: center;
     color: white;
     margin-top: 2rem;
