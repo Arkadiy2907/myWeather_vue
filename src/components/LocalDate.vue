@@ -1,15 +1,20 @@
 <template>
   <div class="localeDate">
-    {{
-      new Date().toLocaleDateString('eu-us', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    }}
+    {{ localeDateNow }}
   </div>
 </template>
+
+<script>
+  import { localeDateNow } from '@/helper/helpers.js';
+
+  export default {
+    computed: {
+      localeDateNow() {
+        return localeDateNow();
+      },
+    },
+  };
+</script>
 
 <style scoped>
   .localeDate {

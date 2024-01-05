@@ -69,3 +69,23 @@ export const getSky = (x) => {
     }
   }
 };
+
+export const localeDateNow = () =>
+  new Date().toLocaleDateString('eu-us', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+export const localeDateDay = (x) =>
+  new Date(x * 1000).toLocaleDateString('eu-us', {
+    month: 'short',
+    day: 'numeric',
+  });
+
+export const localeDateTime = (x) =>
+  new Date(x * 1000).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
