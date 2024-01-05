@@ -54,5 +54,10 @@
     text-align: left;
     word-spacing: 2px;
     line-height: 1.3rem;
+    transition: background-color ease 500ms;
+  }
+
+  .wrap_daily:hover {
+    background-color: rgb(43, 125, 125, 0.7);
   }
 </style>
