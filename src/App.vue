@@ -42,6 +42,9 @@
       <local-date />
       <info-weather :info="info" />
     </div>
+    <div>
+      <daily-list :dailys="dailys" />
+    </div>
 
     <div v-if="info === false && !focused">
       <p>но это не точно, потому город не найден</p>
@@ -52,6 +55,7 @@
 <script>
   import LocalDate from '@/components/LocalDate.vue';
   import InfoWeather from '@/components/InfoWeather.vue';
+  import DailyList from '@/components/DailyList.vue';
   import {
     fetchWeatherNow,
     fetchWeatherNextDays,
@@ -59,13 +63,14 @@
   } from '@/helper/api.js';
 
   export default {
-    components: { LocalDate, InfoWeather },
+    components: { LocalDate, InfoWeather, DailyList },
     data() {
       return {
         city: '',
         error: '',
         info: null,
         infoNextDays: [],
+        dailys: [],
         focused: false,
         myCity: '',
         lat: '',
@@ -118,7 +123,9 @@
         fetchWeatherNextDays(this.lat, this.lon)
           .then((res) => {
             this.infoNextDays = res.data;
-            console.log(res.data);
+            this.dailys = res?.data?.daily;
+            // console.log(this.dailys);
+            console.log(this.dailys);
           })
           .catch(() => {
             this.infoNextDays = [
@@ -174,7 +181,7 @@
       rgb(41, 164, 75) 100%,
       rgb(138, 182, 107) 100%
     );
-    padding: 5px;
+    padding: 1rem;
     text-align: center;
     color: white;
     margin-top: 2rem;
@@ -259,9 +266,6 @@
     font-weight: bold;
     cursor: pointer;
     text-align: center;
-  }
-
-  .info {
   }
 
   .error {
