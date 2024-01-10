@@ -82,6 +82,7 @@ export const localeDateDay = (x) =>
   new Date(x * 1000).toLocaleDateString('eu-us', {
     month: 'short',
     day: 'numeric',
+    weekday: 'short',
   });
 
 export const localeDateTime = (x) =>

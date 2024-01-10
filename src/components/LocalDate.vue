@@ -18,7 +18,7 @@
 
 <style scoped>
   .localeDate {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     font-weight: bold;
     margin-bottom: 0.7rem;
   }
