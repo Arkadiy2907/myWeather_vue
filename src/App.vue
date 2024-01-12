@@ -177,9 +177,8 @@
     border-radius: 50px;
     background: linear-gradient(
       to right,
-      rgb(201, 222, 150) 0%,
-      rgb(41, 164, 75) 100%,
-      rgb(138, 182, 107) 100%
+      rgb(86, 190, 55) 0%,
+      rgb(41, 164, 75) 100%
     );
     padding: 1rem;
     text-align: center;
@@ -200,7 +199,7 @@
     margin-top: 30px;
     background: transparent;
     border: 0;
-    border-bottom: 2px solid rgb(95, 95, 95);
+    border-bottom: 2px solid rgb(114, 112, 112);
     color: rgb(34, 94, 94);
     font-size: 18px;
     padding: 5px 8px;

@@ -7,6 +7,7 @@
       <img :src="getIconUrl" alt="Icon" />
       <p>день: {{ daily.temp.day.toFixed(1) }}</p>
       <p>ночь: {{ daily.temp.night.toFixed(1) }}</p>
+      <p>{{ showHumidity }}</p>
       <p>
         вос:
         {{ localeDateSunriseTime }}
@@ -56,6 +57,9 @@
       },
       showForceWindKm() {
         return `${help.getKmHour(this.daily?.wind_speed)} км/ч`;
+      },
+      showHumidity() {
+        return `влажность: ${this.daily?.humidity} %`;
       },
     },
   };
